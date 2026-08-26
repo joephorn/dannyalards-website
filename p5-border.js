@@ -27,6 +27,19 @@ const updateColors = () => {
   c2 = readCssColor("--c2");
 };
 
+const updateBorderSize = () => {
+  const mobileBorder = 10;
+  const desktopBorder = 18;
+  const mobileBreakpoint = 700;
+  const desktopWidth = 1920;
+  const progress = Math.min(
+    1,
+    Math.max(0, (width - mobileBreakpoint) / (desktopWidth - mobileBreakpoint))
+  );
+
+  border = Math.round(mobileBorder + (desktopBorder - mobileBorder) * progress);
+};
+
 const buildEdge = (length, startDepth, endDepth) => {
   const points = [];
   let pos = 0;
@@ -156,6 +169,33 @@ const drawSide = (side, length, startDist, phase) => {
   }
 };
 
+const getStripeColor = (distance, phase) => {
+  let offset = (distance - phase) % stripe;
+  if (offset < 0) {
+    offset += stripe;
+  }
+  return offset < halfStripe ? c1 : c2;
+};
+
+const drawCorners = (phase) => {
+  const cornerSize = band + 1;
+  const topRight = width;
+  const bottomRight = width + height;
+  const bottomLeft = width + height + width;
+
+  fill(getStripeColor(0, phase));
+  rect(0, 0, cornerSize, cornerSize);
+
+  fill(getStripeColor(topRight, phase));
+  rect(width - cornerSize, 0, cornerSize, cornerSize);
+
+  fill(getStripeColor(bottomRight, phase));
+  rect(width - cornerSize, height - cornerSize, cornerSize, cornerSize);
+
+  fill(getStripeColor(bottomLeft, phase));
+  rect(0, height - cornerSize, cornerSize, cornerSize);
+};
+
 const drawStripes = (phase) => {
   const startTop = 0;
   const startRight = width;
@@ -166,6 +206,7 @@ const drawStripes = (phase) => {
   drawSide("left", height, startLeft, phase);
   drawSide("top", width, startTop, phase);
   drawSide("bottom", width, startBottom, phase);
+  drawCorners(phase);
 };
 
 const drawMask = () => {
@@ -180,6 +221,7 @@ const drawMask = () => {
 
 const recalc = () => {
   updateColors();
+  updateBorderSize();
   updateStripe();
   jagged = generateJagged();
 };

@@ -1,12 +1,32 @@
-const images = [
-  "assets/beeld1.webp",
-  "assets/beeld2.webp",
-  "assets/beeld3.webp",
-  "assets/beeld4.webp",
-  "assets/beeld5.webp"
-];
+const backgroundDirectory = "assets/backgrounds";
+const backgroundExtension = "webp";
+const maximumBackgrounds = 100;
 
 const stage = document.getElementById("carousel-stage");
+
+const imageExists = (src) =>
+  new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(true);
+    img.onerror = () => resolve(false);
+    img.src = src;
+  });
+
+const findBackgrounds = async () => {
+  const sources = [];
+
+  for (let index = 1; index <= maximumBackgrounds; index += 1) {
+    const src = `${backgroundDirectory}/beeld${index}.${backgroundExtension}`;
+
+    if (!(await imageExists(src))) {
+      break;
+    }
+
+    sources.push(src);
+  }
+
+  return sources;
+};
 
 const preloadImages = (sources) => {
   sources.forEach((src) => {
@@ -27,8 +47,14 @@ const getIndexForX = (x, width, total) => {
   return Math.min(total - 1, Math.floor(clamped / (width / total)));
 };
 
-if (stage) {
-  preloadImages(images);
+const initializeCarousel = async () => {
+  const images = await findBackgrounds();
+
+  if (!stage || images.length === 0) {
+    return;
+  }
+
+  preloadImages(images.slice(1));
 
   const layers = [createLayer(), createLayer()];
   const total = images.length;
@@ -49,11 +75,10 @@ if (stage) {
   };
 
   const updateFromEvent = (event) => {
-    if (event.target && typeof event.target.closest === "function") {
-      if (event.target.closest(".contact")) {
-        return;
-      }
+    if (event.target?.closest?.(".contact")) {
+      return;
     }
+
     const rect = stage.getBoundingClientRect();
     const index = getIndexForX(event.clientX - rect.left, rect.width, total);
     setIndex(index);
@@ -62,6 +87,10 @@ if (stage) {
   layers[0].style.backgroundImage = `url("${images[0]}")`;
   layers[0].classList.add("is-active");
 
-  stage.addEventListener("pointermove", updateFromEvent);
-  stage.addEventListener("pointerdown", updateFromEvent);
-}
+  if (total > 1) {
+    stage.addEventListener("pointermove", updateFromEvent);
+    stage.addEventListener("pointerdown", updateFromEvent);
+  }
+};
+
+initializeCarousel();
