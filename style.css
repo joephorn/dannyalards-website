@@ -4,8 +4,8 @@
 }
 
 :root {
-  --c1: #FFC314;
-  --c2: #00412D;
+  --c1: #DF4118;
+  --c2: #F9F3E3;
 }
 
 html,
@@ -73,6 +73,16 @@ body {
   width: 100%;
   height: auto;
   display: block;
+  opacity: 0;
+}
+
+.brand__logo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--c1);
+  -webkit-mask: url("assets/Logo+Tagline.svg") center / contain no-repeat;
+  mask: url("assets/Logo+Tagline.svg") center / contain no-repeat;
 }
 
 .contact {
@@ -86,7 +96,7 @@ body {
   font-size: 20px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #fff;
+  color: #000;
   pointer-events: auto;
   text-align: center;
 }
@@ -135,12 +145,6 @@ body {
   --hover-image: url("assets/hover-boomaap.svg");
 }
 
-.contact__dot {
-  font-size: 1.2em;
-  line-height: 1;
-  cursor: default;
-}
-
 @media (max-width: 700px) {
   .brand {
     width: min(75vw, 60vh);
@@ -150,16 +154,32 @@ body {
   .contact {
     flex-direction: column;
     gap: 8px;
-  }
-
-  .contact__dot {
-    display: none;
+    position: relative;
   }
 
   .contact__link::before {
     width: 34px;
     height: 40px;
-    transform: translate(-50%, 6px);
+    top: 50%;
+    bottom: auto;
+  }
+
+  .contact__link--email::before {
+    left: -6px;
+    transform: translate(-100%, -50%);
+  }
+
+  .contact__link--instagram::before {
+    top: 2px;
+    right: -2px;
+    left: auto;
+    transform: translate(0%, -100%);
+  }
+
+  .contact__link--boomaap::before {
+    right: -6px;
+    left: auto;
+    transform: translate(100%, -50%);
   }
 }
 
