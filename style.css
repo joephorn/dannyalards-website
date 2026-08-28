@@ -52,6 +52,7 @@ body {
 
 .carousel__layer.is-active {
   opacity: 0.8;
+  opacity: 0.9;
 }
 
 .brand {
