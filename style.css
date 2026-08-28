@@ -113,7 +113,7 @@ body {
   height: 58px;
   background: var(--hover-image) center / contain no-repeat;
   opacity: 0;
-  transform: translate(-50%, -10px);
+  transform: translate(-50%, 0);
   transition: none;
   pointer-events: none;
 }
@@ -142,8 +142,8 @@ body {
 }
 
 @media (max-width: 700px) {
-  .carousel__logo {
-    width: min(70vw, 60vh);
+  .brand {
+    width: min(75vw, 60vh);
     max-height: 42vh;
   }
 
@@ -154,6 +154,12 @@ body {
 
   .contact__dot {
     display: none;
+  }
+
+  .contact__link::before {
+    width: 34px;
+    height: 40px;
+    transform: translate(-50%, 6px);
   }
 }
 
